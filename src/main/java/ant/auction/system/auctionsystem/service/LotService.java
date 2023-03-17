@@ -1,7 +1,10 @@
 package ant.auction.system.auctionsystem.service;
 
-public class LotService
+import org.springframework.stereotype.Service;
+
+@Service
+public class LotService  {
 
 
-{
+
 }

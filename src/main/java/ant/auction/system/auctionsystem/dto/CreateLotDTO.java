@@ -1,6 +1,7 @@
 package ant.auction.system.auctionsystem.dto;
 
 import ant.auction.system.auctionsystem.model.Lot;
+import ant.auction.system.auctionsystem.model.Status;
 import lombok.Data;
 
 @Data
@@ -15,7 +16,6 @@ public class CreateLotDTO {
     public static CreateLotDTO fromLot(Lot lot) {
         CreateLotDTO dto = new CreateLotDTO();
 
-       // dto.setStatus(dto.getStatus());
         dto.setTitle(lot.getTitle());
 //        dto.setDescription(lot.getDescription());
 //        dto.setStartPrice(lot.getStartPrice());
@@ -27,7 +27,7 @@ public class CreateLotDTO {
     public Lot toLot() {
         Lot lot = new Lot();
 
-        lot.setStatus("CREATED");
+        lot.setStatus(Status.CREATED);
         lot.setTitle(this.getTitle());
         lot.setDescription(this.getDescription());
         lot.setStartPrice(this.getStartPrice());

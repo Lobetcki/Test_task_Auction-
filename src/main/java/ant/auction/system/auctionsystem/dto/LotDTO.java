@@ -29,6 +29,7 @@ public class LotDTO {
 
     public Lot toLot() {
         Lot lot = new Lot();
+
         lot.setId(this.getId());
         lot.setStatus(this.getStatus());
         lot.setTitle(this.getTitle());

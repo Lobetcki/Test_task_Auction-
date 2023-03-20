@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class FullLotDTO {
 
-
-
     private Long id;
     private Status status;
     private String title;

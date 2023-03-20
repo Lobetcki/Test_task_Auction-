@@ -1,8 +1,12 @@
 package ant.auction.system.auctionsystem.controller;
 
+import ant.auction.system.auctionsystem.dto.BidDTO;
 import ant.auction.system.auctionsystem.dto.CreateLotDTO;
 import ant.auction.system.auctionsystem.dto.FullLotDTO;
+import ant.auction.system.auctionsystem.dto.LotDTO;
+import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.service.LotService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +40,7 @@ public class LotController {
 //                                                            //3 lot/{id} Получить полную информацию о лоте
 
     @GetMapping("/lot/{id}/full")
-    public ResponseEntity<FullLotDTO> getLot(@PathVariable Long id) {
+    public ResponseEntity<FullLotDTO> getFullLot(@PathVariable Long id) {
         FullLotDTO fullLotDTO = lotService.getFullLot(id);
         if (fullLotDTO == null) {
             return ResponseEntity.notFound().build();
@@ -46,18 +50,28 @@ public class LotController {
 //// -------------------------------------------------------------------------------------------------------------------
                                                             //4 start Начать торги по лоту
     @PostMapping("/lot/{id}/start")
-    public ResponseEntity<String> startLot(Long id) {
-        lotService.startLot(id);
+    public ResponseEntity<String> startLot(@PathVariable Long id) {
+        LotDTO lotDTO = lotService.startLot(id);
+        if (lotDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
+        }
         return  ResponseEntity.ok("Лот переведен в статус начато");
     }
-//
-//
-//                                                            //5 lot/{id}/bid Сделать ставку по лоту
-//    @PostMapping ("/lot/{id}/bid")
-//    public String Integer(){
-//        return "1";
-//
-//    }
+
+
+                                                            //5 lot/{id}/bid Сделать ставку по лоту
+    @PostMapping ("/lot/{id}/bid")
+    public ResponseEntity<String> createdBid(@PathVariable Long id, @RequestBody String bidderName){
+        LotDTO lotDTO = lotService.createdBid(id, bidderName);
+        if (lotDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
+        }
+        if (!(lotDTO.getStatus().equals(Status.STARTED))) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Лот в неверном статусе");
+        }
+        return  ResponseEntity.ok("Ставка создана");
+
+    }
 //
 //                                                           //6 lot/{id}/stop Остановить торги по лот
 //    @PostMapping("/lot/{id}/stop")
@@ -70,7 +84,7 @@ public class LotController {
 
                                                                //7 lot Создает новый лот
     @PostMapping("/lot")
-    public ResponseEntity<String> CreatedLot(@RequestBody CreateLotDTO createLotDTO) {
+    public ResponseEntity<String> createdLot(@RequestBody CreateLotDTO createLotDTO) {
 
         return  ResponseEntity.ok("Лот: " + lotService.createdLot(createLotDTO) + " успешно создан");
     }

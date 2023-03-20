@@ -1,9 +1,6 @@
 package ant.auction.system.auctionsystem.service;
 
-import ant.auction.system.auctionsystem.dto.BidDTO;
-import ant.auction.system.auctionsystem.dto.CreateLotDTO;
-import ant.auction.system.auctionsystem.dto.FullLotDTO;
-import ant.auction.system.auctionsystem.dto.LotDTO;
+import ant.auction.system.auctionsystem.dto.*;
 import ant.auction.system.auctionsystem.model.Bid;
 import ant.auction.system.auctionsystem.model.Lot;
 import ant.auction.system.auctionsystem.model.Status;
@@ -31,13 +28,17 @@ public class LotService  {
 
                                                 //1 Get Получить информацию о первом ставившем на лот
     public BidDTO getFirstBid(Long lotId) {
-        logger.info("Was invoked method for get all the students");
-
-        return null;
+        logger.info("Получает информацию о первом ставившем на лот");
+        return BidDTO.fromBid(bidRepository.findBylotIdFirstBid(lotId));
     }
 
+                //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
+    public String getMostFrequentBidder(Long lotId) {
+        String bidderName = bidRepository.getMostFrequentBidder(lotId);
 
-
+        return bidderName;
+//        return BidDTO.fromBid(bidRepository.getMostFrequentBidder(lotId));
+    }
 
                                                 //3 lot/{id} Получить полную информацию о лоте
     public FullLotDTO getFullLot(Long lotId) {
@@ -45,7 +46,7 @@ public class LotService  {
         FullLotDTO fullLotDTO = FullLotDTO.fromLot(lotRepository.findById(lotId).get());
         fullLotDTO.setLastBid(bidRepository.findBylotIdFinalBid(lotId));
         fullLotDTO.setCurrentPrice(fullLotDTO.getStartPrice() +
-                (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId()));
+                (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId)));
         return fullLotDTO;
     }
 
@@ -59,22 +60,24 @@ public class LotService  {
     }
 
                                                             //5 lot/{id}/bid Сделать ставку по лоту
-    public LotDTO createdBid(Long lotId, String bidderName) {
+    public LotDTO createdBid(Long lotId, CreateBidDTO createBidDTOBidDTO) {
         logger.info("Делает заявку по лоту");
         LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
-        BidDTO bidDTO = new BidDTO();
-        bidDTO.setBidderName(bidderName);
-        bidDTO.setLot(lotRepository.findById(lotId).get());
-        BidDTO.fromBid(bidRepository.save(bidDTO.toBid()));
+        createBidDTOBidDTO.setLot(lotRepository.findById(lotId).get());
+        CreateBidDTO.fromBid(bidRepository.save(createBidDTOBidDTO.toBid()));
         return lotDTO;
     }
 
-                                                             //7 lot Создает новый лот
+                                                        //6 lot/{id}/stop Остановить торги по лот
+
+
+         //Неработает                                                    //7 lot Создает новый лот
     public String createdLot(CreateLotDTO createLotDTO) {
         logger.info("Новый лот создается");
         CreateLotDTO.fromLot(lotRepository.save(createLotDTO.toLot()));
         return createLotDTO.getTitle();
 
     }
+
 
 }

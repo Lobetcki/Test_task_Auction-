@@ -1,9 +1,6 @@
 package ant.auction.system.auctionsystem.controller;
 
-import ant.auction.system.auctionsystem.dto.BidDTO;
-import ant.auction.system.auctionsystem.dto.CreateLotDTO;
-import ant.auction.system.auctionsystem.dto.FullLotDTO;
-import ant.auction.system.auctionsystem.dto.LotDTO;
+import ant.auction.system.auctionsystem.dto.*;
 import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.service.LotService;
 import org.springframework.http.HttpStatus;
@@ -21,23 +18,20 @@ public class LotController {
     }
 
 
-//                                                             //1 Get Получить информацию о первом ставившем на лот
-//    @GetMapping ("/lot/{lotId}/first")
-//    public ResponseEntity<BidDTO> getFirstBetOnTheLot (@PathVariable Long lotId) {
-//
-//      //  return ResponseEntity.ok(lotService.getFirstBid(lotId));
-//        return null;
-//    }
-//                                                            //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
-//    @GetMapping("/lot/{id}/frequent")
-//    public String nameGreatVariety() {
-//
-//
-//        return null;
-//
-//    }
-//
-//                                                            //3 lot/{id} Получить полную информацию о лоте
+                                                             //1 Get Получить информацию о первом ставившем на лот
+    @GetMapping ("/lot/{id}/first")
+    public ResponseEntity<BidDTO> getFirstBetOnTheLot (@PathVariable Long id) {
+
+        return ResponseEntity.ok(lotService.getFirstBid(id));
+    }
+
+                                                            //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
+    @GetMapping("/lot/{id}/frequent")
+    public ResponseEntity<String> getMostFrequentBidder(@PathVariable Long id) {
+        return ResponseEntity.ok(lotService.getMostFrequentBidder(id));
+    }
+
+                                                            //3 lot/{id} Получить полную информацию о лоте
 
     @GetMapping("/lot/{id}/full")
     public ResponseEntity<FullLotDTO> getFullLot(@PathVariable Long id) {
@@ -59,10 +53,10 @@ public class LotController {
     }
 
 
-                                                            //5 lot/{id}/bid Сделать ставку по лоту
+        //переделать                                    //5 lot/{id}/bid Сделать ставку по лоту
     @PostMapping ("/lot/{id}/bid")
-    public ResponseEntity<String> createdBid(@PathVariable Long id, @RequestBody String bidderName){
-        LotDTO lotDTO = lotService.createdBid(id, bidderName);
+    public ResponseEntity<String> createdBid(@PathVariable Long id, @RequestBody CreateBidDTO createBidDTO){
+        LotDTO lotDTO = lotService.createdBid(id, createBidDTO);
         if (lotDTO == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
         }
@@ -72,15 +66,20 @@ public class LotController {
         return  ResponseEntity.ok("Ставка создана");
 
     }
+
+                                                           //6 lot/{id}/stop Остановить торги по лот
+    @PostMapping("/lot/{id}/stop")
+    public String stopLot(Long id) {
+//        LotDTO lotDTO = lotService.startLot(id);
+//        if (lotDTO == null) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
+//        }
+//        return  ResponseEntity.ok("Лот переведен в статус начато");
+//        if (lotId != 0) {
 //
-//                                                           //6 lot/{id}/stop Остановить торги по лот
-//    @PostMapping("/lot/{id}/stop")
-//    public String stopLot(Long lotId) {
-////        if (lotId != 0) {
-////
-////        }
-//        return null;
-//    }
+//        }
+        return null;
+    }
 
                                                                //7 lot Создает новый лот
     @PostMapping("/lot")

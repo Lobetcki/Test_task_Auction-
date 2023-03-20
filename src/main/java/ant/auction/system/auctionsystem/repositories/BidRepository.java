@@ -9,10 +9,19 @@ import org.springframework.stereotype.Repository;
 public interface BidRepository extends JpaRepository<Bid, Long> {
 
             //- Возможность получить последнюю заявку (bid) ставившего на лот. Должен вернуть Bid.
-    @Query(value = "SELECT * FROM bid b ORDER BY bid_date DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM bid b WHERE lot_id = ?1 ORDER BY bid_date DESC LIMIT 1", nativeQuery = true)
     Bid findBylotIdFinalBid(Long lotId);
 
              //- Возможность получить количество всех bid для лота. Должен вернуть число.
-    @Query(value = "SELECT COUNT(lot_id) AS count FROM bid b", nativeQuery = true)
-    Integer getBidCountByLotId();
+    @Query(value = "SELECT COUNT(b) AS count FROM bid b WHERE lot_id = ?1", nativeQuery = true)
+    Integer getBidCountByLotId(Long lotId);
+
+                                //-Получить информацию о первом ставившем на лот.
+    @Query(value = "SELECT * FROM bid b WHERE lot_id = ?1 ORDER BY bid_date LIMIT 1", nativeQuery = true)
+    Bid findBylotIdFirstBid(Long lotId);
+
+    @Query(value = "SELECT (SELECT bidder_name FROM bid " +
+            "WHERE lot_id = ?1 " +
+            "GROUP BY bidder_name ORDER BY count(*) DESC LIMIT 1) AS bn", nativeQuery = true)
+    String getMostFrequentBidder(Long lotId);
 }

@@ -1,7 +1,6 @@
 package ant.auction.system.auctionsystem.service;
 
 import ant.auction.system.auctionsystem.dto.*;
-import ant.auction.system.auctionsystem.model.Bid;
 import ant.auction.system.auctionsystem.model.Lot;
 import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.repositories.BidRepository;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,12 +42,18 @@ public class LotService  {
     }
 
                                                 //3 lot/{id} Получить полную информацию о лоте
+    public Integer getCurrentPrice(Long lotId) {
+        FullLotDTO fullLotDTO = FullLotDTO.fromLot(lotRepository.findById(lotId).get());
+        return fullLotDTO.getStartPrice() + (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId));
+    }
+
     public FullLotDTO getFullLot(Long lotId) {
         logger.info("Возвращает полную информацию о лоте с последним ставившим и текущей ценой");
         FullLotDTO fullLotDTO = FullLotDTO.fromLot(lotRepository.findById(lotId).get());
         fullLotDTO.setLastBid(bidRepository.findBylotIdFinalBid(lotId));
-        fullLotDTO.setCurrentPrice(fullLotDTO.getStartPrice() +
-                (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId)));
+        fullLotDTO.setCurrentPrice(getCurrentPrice(lotId));
+//        fullLotDTO.setCurrentPrice(fullLotDTO.getStartPrice() +
+//                (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId)));
         return fullLotDTO;
     }
 
@@ -80,7 +84,7 @@ public class LotService  {
         return lotDTO;
     }
 
-         //Неработает                                                    //7 lot Создает новый лот
+                                                             //7 lot Создает новый лот
     public String createdLot(CreateLotDTO createLotDTO) {
         logger.info("Новый лот создается");
         CreateLotDTO.fromLot(lotRepository.save(createLotDTO.toLot()));
@@ -96,6 +100,15 @@ public class LotService  {
     }
 
                                                     //9 Экспортировать все лоты в файл CSV
+    public List<FullLotDTO> getCSVFile() {
+        logger.info("Экспортирует все лоты в файл CSV");
+            return  lotRepository.findAll()
+                    .stream().map(FullLotDTO::fromLot)
+                    .peek(fullLotDTO -> fullLotDTO.setCurrentPrice(getCurrentPrice(fullLotDTO.getId())))
+                    .peek(fullLotDTO -> fullLotDTO.setLastBid(bidRepository.findBylotIdFinalBid(fullLotDTO.getId())))
+                    .collect(Collectors.toList());
+    }
+
 
 
 }

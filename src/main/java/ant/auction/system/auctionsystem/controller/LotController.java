@@ -57,7 +57,7 @@ public class LotController {
     }
 
 
-        //переделать                                    //5 lot/{id}/bid Сделать ставку по лоту
+                                                        //5 bid Сделать ставку по лоту
     @PostMapping ("/lot/{id}/bid")
     public ResponseEntity<String> createdBid(@PathVariable Long id, @RequestBody CreateBidDTO createBidDTO){
         LotDTO lotDTO = lotService.createdBid(id, createBidDTO);
@@ -71,7 +71,7 @@ public class LotController {
 
     }
 
-                                                           //6 lot/{id}/stop Остановить торги по лот
+                                                           //6 stop Остановить торги по лот
     @PostMapping("/lot/{id}/stop")
     public ResponseEntity<String> stopLot(Long id) {
         LotDTO lotDTO = lotService.stopLot(id);
@@ -102,7 +102,7 @@ public class LotController {
                                                      //9 Экспортировать все лоты в файл CSV
     @GetMapping("lot/export")
     public void getCSVFile() {
-
+        
 
 
     }

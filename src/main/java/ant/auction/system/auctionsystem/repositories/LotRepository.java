@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface LotRepository extends PagingAndSortingRepository<Lot, Long> {
+public interface LotRepository extends JpaRepository<Lot, Long> {
 
     List<Lot> findLotByStatus(Pageable pageable, Status status);
 

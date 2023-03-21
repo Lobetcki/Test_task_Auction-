@@ -3,9 +3,13 @@ package ant.auction.system.auctionsystem.controller;
 import ant.auction.system.auctionsystem.dto.*;
 import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.service.LotService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/auction")
 @RestController
@@ -69,16 +73,12 @@ public class LotController {
 
                                                            //6 lot/{id}/stop Остановить торги по лот
     @PostMapping("/lot/{id}/stop")
-    public String stopLot(Long id) {
-//        LotDTO lotDTO = lotService.startLot(id);
-//        if (lotDTO == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
-//        }
-//        return  ResponseEntity.ok("Лот переведен в статус начато");
-//        if (lotId != 0) {
-//
-//        }
-        return null;
+    public ResponseEntity<String> stopLot(Long id) {
+        LotDTO lotDTO = lotService.stopLot(id);
+        if (lotDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
+        }
+        return  ResponseEntity.ok("Лот перемещен в статус остановлен");
     }
 
                                                                //7 lot Создает новый лот
@@ -92,15 +92,20 @@ public class LotController {
 
 
                             //8 get lot Получить все лоты, основываясь на фильтре статуса и номере страницы
-//    @GetMapping("/lot")
-//    public List<LotDTO> getAllLotsByStatusAndNumberPage() {
-//            return null;
-//    }
-//                                            //9 Экспортировать все лоты в файл CSV
-//    @GetMapping("lot/export")
-//    public void exportAllLotsToCSVFile () {
-//
-//    }
+    @GetMapping("/lots")
+    public ResponseEntity<List<LotDTO>> findLots(Pageable pageable, @RequestParam("status") Status status) {
+        return ResponseEntity.ok(lotService.findLots(pageable, status));
+    }
+
+
+
+                                                     //9 Экспортировать все лоты в файл CSV
+    @GetMapping("lot/export")
+    public void getCSVFile() {
+
+
+
+    }
 
 
 

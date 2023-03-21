@@ -8,9 +8,12 @@ import ant.auction.system.auctionsystem.repositories.BidRepository;
 import ant.auction.system.auctionsystem.repositories.LotRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LotService  {
@@ -69,15 +72,30 @@ public class LotService  {
     }
 
                                                         //6 lot/{id}/stop Остановить торги по лот
-
+    public LotDTO stopLot(Long lotId) {
+        logger.info("Останавливает торги по лоту");
+        LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
+        lotDTO.setStatus(Status.STOPPED);
+        LotDTO.fromLot(lotRepository.save(lotDTO.toLot()));
+        return lotDTO;
+    }
 
          //Неработает                                                    //7 lot Создает новый лот
     public String createdLot(CreateLotDTO createLotDTO) {
         logger.info("Новый лот создается");
         CreateLotDTO.fromLot(lotRepository.save(createLotDTO.toLot()));
         return createLotDTO.getTitle();
-
     }
+
+                                //8 get lot Получить все лоты, основываясь на фильтре статуса и номере страницы
+    public List<LotDTO> findLots(Pageable pageable, Status status) {
+        logger.info("Получает все лоты, основываясь на фильтре статуса");
+        return lotRepository.findLotByStatus(pageable, status)
+                .stream().map(LotDTO::fromLot)
+                .collect(Collectors.toList());
+    }
+
+                                                    //9 Экспортировать все лоты в файл CSV
 
 
 }

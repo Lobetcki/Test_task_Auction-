@@ -1,6 +1,5 @@
 package ant.auction.system.auctionsystem.repositories;
 
-import ant.auction.system.auctionsystem.dto.BidDTO;
 import ant.auction.system.auctionsystem.model.Bid;
 import ant.auction.system.auctionsystem.projections.FrequentView;
 import org.springframework.data.jpa.repository.JpaRepository;

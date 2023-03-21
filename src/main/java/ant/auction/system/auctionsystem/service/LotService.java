@@ -39,9 +39,6 @@ public class LotService  {
     public FrequentView getMostFrequentBidder(Long lotId) {
         logger.info("Возвращает имя ставившего на данный лот наибольшее количество раз");
         return bidRepository.getMostFrequentBidder(lotId);
-        //BidDTO bidDTO = BidDTO.fromBid(bidRepository.getMostFrequentBidder(lotId));
-
-      //  return bidDTO;
     }
 
                                                 //3 lot/{id} Получить полную информацию о лоте

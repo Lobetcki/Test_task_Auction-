@@ -3,13 +3,21 @@ package ant.auction.system.auctionsystem.controller;
 import ant.auction.system.auctionsystem.dto.*;
 import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.service.LotService;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
+
+import static java.lang.System.out;
 
 @RequestMapping("/auction")
 @RestController
@@ -101,10 +109,38 @@ public class LotController {
 
                                                      //9 Экспортировать все лоты в файл CSV
     @GetMapping("lot/export")
-    public void getCSVFile() {
-        
+    public ResponseEntity<String> getCSVFile(HttpServletResponse response) throws IOException {
+        List<FullLotDTO> listLot = lotService.getCSVFile();
 
+        StringWriter sw = new StringWriter();
 
+        CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT);
+
+        listLot.stream().forEach(fullLotDTO -> {
+
+            try {
+                printer.printRecord(
+                        fullLotDTO.getId(),
+                        fullLotDTO.getTitle(),
+                        fullLotDTO.getStatus(),
+                        fullLotDTO.getLastBid() != null ? fullLotDTO.getLastBid().getBidderName() : "emty",
+                        fullLotDTO.getCurrentPrice()
+                        );
+        } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+
+        printer.flush();
+
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachement; filename=\"Lots.csv\"");
+        PrintWriter writer = response.getWriter();
+        writer.write(out.toString());
+        writer.flush();
+        writer.close();
+        return ResponseEntity.ok().build();
     }
 
 

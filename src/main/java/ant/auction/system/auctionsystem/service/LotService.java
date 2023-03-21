@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,13 +28,12 @@ public class LotService  {
         this.lotRepository = lotRepository;
     }
 
-    public LotDTO getLotDTO(Long lotId) {
-    return LotDTO.fromLot(lotRepository.findById(lotId).get());
-}
+
                                                 //1 Get Получить информацию о первом ставившем на лот
     public BidDTO getFirstBid(Long lotId) {
-        logger.info("Получает информацию о первом ставившем на лот");
-        return BidDTO.fromBid(bidRepository.findBylotIdFirstBid(lotId));
+        BidDTO bidDTO = BidDTO.fromBid(bidRepository.findBylotIdFirstBid(lotId));
+        logger.debug("Получает информацию о первом ставившем на лот: " + bidDTO);
+        return bidDTO;
     }
 
                 //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
@@ -58,7 +58,7 @@ public class LotService  {
 
                                                               //4 start Начать торги по лоту
     public LotDTO startLot(Long lotId) {
-        logger.info("Лот переведен в статус начато");
+        logger.info("Лот переведен в статус начато"); //if null
         LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
         lotDTO.setStatus(Status.STARTED);
         LotDTO.fromLot(lotRepository.save(lotDTO.toLot()));
@@ -66,11 +66,12 @@ public class LotService  {
     }
 
                                                             //5 lot/{id}/bid Сделать ставку по лоту
-    public LotDTO createdBid(Long lotId, CreateBidDTO createBidDTOBidDTO) {
+    @Transactional
+    public LotDTO createdBid(Long lotId, CreateBidDTO createBidDTO) {
         logger.info("Делает заявку по лоту");
         LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
-        createBidDTOBidDTO.setLot(lotRepository.findById(lotId).get());
-        CreateBidDTO.fromBid(bidRepository.save(createBidDTOBidDTO.toBid()));
+        createBidDTO.setLot(lotRepository.findById(lotId).get());
+        CreateBidDTO.fromBid(bidRepository.save(createBidDTO.toBid()));
         return lotDTO;
     }
 

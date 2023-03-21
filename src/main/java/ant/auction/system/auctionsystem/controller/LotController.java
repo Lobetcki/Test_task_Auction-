@@ -19,7 +19,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 
-@RequestMapping("/auction")
+@RequestMapping()
 @RestController
 public class LotController {
 

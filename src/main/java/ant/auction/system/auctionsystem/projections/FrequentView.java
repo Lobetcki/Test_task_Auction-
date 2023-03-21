@@ -6,5 +6,4 @@ public interface FrequentView {
 
     LocalDateTime getBidDate();
     String getBidderName();
-
 }

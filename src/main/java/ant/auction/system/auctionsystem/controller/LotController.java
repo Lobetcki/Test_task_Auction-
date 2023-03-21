@@ -33,21 +33,21 @@ public class LotController {
                                                              //1 Get Получить информацию о первом ставившем на лот
     @GetMapping ("/lot/{id}/first")
     public ResponseEntity<BidDTO> getFirstBetOnTheLot (@PathVariable Long id) {
-        LotDTO lotDTO = lotService.getLotDTO(id);
-        if (lotDTO == null) {
+        BidDTO bidDTO = lotService.getFirstBid(id);
+        if (bidDTO == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(lotService.getFirstBid(id));
+        return ResponseEntity.ok(bidDTO);
     }
 
                                                             //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
     @GetMapping("/lot/{id}/frequent")
     public ResponseEntity<FrequentView> getMostFrequentBidder(@PathVariable Long id) {
-        LotDTO lotDTO = lotService.getLotDTO(id);
-        if (lotDTO == null) {
+        FrequentView frequentView = lotService.getMostFrequentBidder(id);
+        if (frequentView == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(lotService.getMostFrequentBidder(id));
+        return ResponseEntity.ok(frequentView);
     }
 
                                                             //3 lot/{id} Получить полную информацию о лоте

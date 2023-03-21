@@ -1,6 +1,7 @@
 package ant.auction.system.auctionsystem.service;
 
 import ant.auction.system.auctionsystem.dto.*;
+import ant.auction.system.auctionsystem.model.Lot;
 import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.projections.FrequentView;
 import ant.auction.system.auctionsystem.repositories.BidRepository;
@@ -70,7 +71,7 @@ public class LotService  {
     public LotDTO createdBid(Long lotId, CreateBidDTO createBidDTO) {
         logger.info("Делает заявку по лоту");
         LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
-        createBidDTO.setLot(lotRepository.findById(lotId).get());
+        createBidDTO.setLot(lotDTO.toLot());
         CreateBidDTO.fromBid(bidRepository.save(createBidDTO.toBid()));
         return lotDTO;
     }

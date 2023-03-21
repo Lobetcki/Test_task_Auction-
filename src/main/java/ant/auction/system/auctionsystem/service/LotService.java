@@ -1,7 +1,6 @@
 package ant.auction.system.auctionsystem.service;
 
 import ant.auction.system.auctionsystem.dto.*;
-import ant.auction.system.auctionsystem.model.Lot;
 import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.repositories.BidRepository;
 import ant.auction.system.auctionsystem.repositories.LotRepository;
@@ -34,11 +33,10 @@ public class LotService  {
     }
 
                 //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
-    public String getMostFrequentBidder(Long lotId) {
-        String bidderName = bidRepository.getMostFrequentBidder(lotId);
+    public BidDTO getMostFrequentBidder(Long lotId) {
+        BidDTO bidDTO = BidDTO.fromBid(bidRepository.getMostFrequentBidder(lotId));
 
-        return bidderName;
-//        return BidDTO.fromBid(bidRepository.getMostFrequentBidder(lotId));
+        return bidDTO;
     }
 
                                                 //3 lot/{id} Получить полную информацию о лоте
@@ -50,10 +48,8 @@ public class LotService  {
     public FullLotDTO getFullLot(Long lotId) {
         logger.info("Возвращает полную информацию о лоте с последним ставившим и текущей ценой");
         FullLotDTO fullLotDTO = FullLotDTO.fromLot(lotRepository.findById(lotId).get());
-        fullLotDTO.setLastBid(bidRepository.findBylotIdFinalBid(lotId));
+        fullLotDTO.setLastBid(BidDTO.fromBid(bidRepository.findBylotIdFinalBid(lotId)));
         fullLotDTO.setCurrentPrice(getCurrentPrice(lotId));
-//        fullLotDTO.setCurrentPrice(fullLotDTO.getStartPrice() +
-//                (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId)));
         return fullLotDTO;
     }
 
@@ -105,7 +101,7 @@ public class LotService  {
             return  lotRepository.findAll()
                     .stream().map(FullLotDTO::fromLot)
                     .peek(fullLotDTO -> fullLotDTO.setCurrentPrice(getCurrentPrice(fullLotDTO.getId())))
-                    .peek(fullLotDTO -> fullLotDTO.setLastBid(bidRepository.findBylotIdFinalBid(fullLotDTO.getId())))
+                    .peek(fullLotDTO -> fullLotDTO.setLastBid(BidDTO.fromBid(bidRepository.findBylotIdFinalBid(fullLotDTO.getId()))))
                     .collect(Collectors.toList());
     }
 

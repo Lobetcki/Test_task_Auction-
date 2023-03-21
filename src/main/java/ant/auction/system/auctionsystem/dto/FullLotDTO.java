@@ -16,7 +16,7 @@ public class FullLotDTO {
     private Integer bidPrice;
 
     private Integer currentPrice;
-    private Bid lastBid;
+    private BidDTO lastBid;
 
 
     public static FullLotDTO fromLot(Lot lot) {

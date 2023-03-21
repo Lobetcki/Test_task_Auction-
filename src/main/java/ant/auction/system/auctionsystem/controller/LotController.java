@@ -17,7 +17,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
-import static java.lang.System.out;
 
 @RequestMapping("/auction")
 @RestController
@@ -33,13 +32,20 @@ public class LotController {
                                                              //1 Get Получить информацию о первом ставившем на лот
     @GetMapping ("/lot/{id}/first")
     public ResponseEntity<BidDTO> getFirstBetOnTheLot (@PathVariable Long id) {
-
+        FullLotDTO fullLotDTO = lotService.getFullLot(id);
+        if (fullLotDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(lotService.getFirstBid(id));
     }
 
                                                             //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
     @GetMapping("/lot/{id}/frequent")
-    public ResponseEntity<String> getMostFrequentBidder(@PathVariable Long id) {
+    public ResponseEntity<BidDTO> getMostFrequentBidder(@PathVariable Long id) {
+        FullLotDTO fullLotDTO = lotService.getFullLot(id);
+        if (fullLotDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(lotService.getMostFrequentBidder(id));
     }
 
@@ -114,7 +120,7 @@ public class LotController {
 
         StringWriter sw = new StringWriter();
 
-        CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT);
+        CSVPrinter printer = new CSVPrinter(sw, CSVFormat.DEFAULT);
 
         listLot.stream().forEach(fullLotDTO -> {
 
@@ -137,7 +143,7 @@ public class LotController {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachement; filename=\"Lots.csv\"");
         PrintWriter writer = response.getWriter();
-        writer.write(out.toString());
+        writer.write(sw.toString());
         writer.flush();
         writer.close();
         return ResponseEntity.ok().build();

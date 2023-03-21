@@ -2,21 +2,16 @@ package ant.auction.system.auctionsystem.dto;
 
 import ant.auction.system.auctionsystem.model.Bid;
 import ant.auction.system.auctionsystem.model.Lot;
-import ant.auction.system.auctionsystem.repositories.LotRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.ManyToOne;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
 public class BidDTO {
 
-  //  private Long id;
     public String bidderName;
     public LocalDateTime bidDate;
     @JsonIgnore
@@ -25,10 +20,8 @@ public class BidDTO {
     public static BidDTO fromBid(Bid bid) {
         BidDTO dto = new BidDTO();
 
-//        dto.setId(bid.getId());
         dto.setBidDate(bid.getBidDate());
         dto.setBidderName(bid.getBidderName());
-//        dto.setLot(bid.getLot());
 
         return dto;
     }

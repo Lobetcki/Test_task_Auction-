@@ -1,6 +1,5 @@
 package ant.auction.system.auctionsystem.dto;
 
-import ant.auction.system.auctionsystem.model.Bid;
 import ant.auction.system.auctionsystem.model.Lot;
 import ant.auction.system.auctionsystem.model.Status;
 import lombok.Data;

@@ -2,6 +2,7 @@ package ant.auction.system.auctionsystem.controller;
 
 import ant.auction.system.auctionsystem.dto.*;
 import ant.auction.system.auctionsystem.model.Status;
+import ant.auction.system.auctionsystem.projections.FrequentView;
 import ant.auction.system.auctionsystem.service.LotService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -32,8 +33,8 @@ public class LotController {
                                                              //1 Get Получить информацию о первом ставившем на лот
     @GetMapping ("/lot/{id}/first")
     public ResponseEntity<BidDTO> getFirstBetOnTheLot (@PathVariable Long id) {
-        FullLotDTO fullLotDTO = lotService.getFullLot(id);
-        if (fullLotDTO == null) {
+        LotDTO lotDTO = lotService.getLotDTO(id);
+        if (lotDTO == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(lotService.getFirstBid(id));
@@ -41,9 +42,9 @@ public class LotController {
 
                                                             //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
     @GetMapping("/lot/{id}/frequent")
-    public ResponseEntity<BidDTO> getMostFrequentBidder(@PathVariable Long id) {
-        FullLotDTO fullLotDTO = lotService.getFullLot(id);
-        if (fullLotDTO == null) {
+    public ResponseEntity<FrequentView> getMostFrequentBidder(@PathVariable Long id) {
+        LotDTO lotDTO = lotService.getLotDTO(id);
+        if (lotDTO == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(lotService.getMostFrequentBidder(id));

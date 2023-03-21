@@ -20,7 +20,6 @@ public class Lot {
     private String description;
     private Integer startPrice;
     private Integer bidPrice;
-   // private String currentPrice;
 
     @OneToMany(mappedBy = "lot")
     private List<Bid> lastBid;

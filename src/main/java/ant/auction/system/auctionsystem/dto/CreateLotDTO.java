@@ -17,9 +17,6 @@ public class CreateLotDTO {
         CreateLotDTO dto = new CreateLotDTO();
 
         dto.setTitle(lot.getTitle());
-//        dto.setDescription(lot.getDescription());
-//        dto.setStartPrice(lot.getStartPrice());
-//        dto.setBidPrice(lot.getBidPrice());
 
         return dto;
     }

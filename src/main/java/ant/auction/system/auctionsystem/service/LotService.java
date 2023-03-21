@@ -2,6 +2,7 @@ package ant.auction.system.auctionsystem.service;
 
 import ant.auction.system.auctionsystem.dto.*;
 import ant.auction.system.auctionsystem.model.Status;
+import ant.auction.system.auctionsystem.projections.FrequentView;
 import ant.auction.system.auctionsystem.repositories.BidRepository;
 import ant.auction.system.auctionsystem.repositories.LotRepository;
 import org.slf4j.Logger;
@@ -25,7 +26,9 @@ public class LotService  {
         this.lotRepository = lotRepository;
     }
 
-
+    public LotDTO getLotDTO(Long lotId) {
+    return LotDTO.fromLot(lotRepository.findById(lotId).get());
+}
                                                 //1 Get Получить информацию о первом ставившем на лот
     public BidDTO getFirstBid(Long lotId) {
         logger.info("Получает информацию о первом ставившем на лот");
@@ -33,10 +36,12 @@ public class LotService  {
     }
 
                 //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
-    public BidDTO getMostFrequentBidder(Long lotId) {
-        BidDTO bidDTO = BidDTO.fromBid(bidRepository.getMostFrequentBidder(lotId));
+    public FrequentView getMostFrequentBidder(Long lotId) {
+        logger.info("Возвращает имя ставившего на данный лот наибольшее количество раз");
+        return bidRepository.getMostFrequentBidder(lotId);
+        //BidDTO bidDTO = BidDTO.fromBid(bidRepository.getMostFrequentBidder(lotId));
 
-        return bidDTO;
+      //  return bidDTO;
     }
 
                                                 //3 lot/{id} Получить полную информацию о лоте

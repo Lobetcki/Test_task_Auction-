@@ -2,6 +2,7 @@ package ant.auction.system.auctionsystem.repositories;
 
 import ant.auction.system.auctionsystem.dto.BidDTO;
 import ant.auction.system.auctionsystem.model.Bid;
+import ant.auction.system.auctionsystem.projections.FrequentView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,8 +22,8 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     @Query(value = "SELECT * FROM bid b WHERE lot_id = ?1 ORDER BY bid_date LIMIT 1", nativeQuery = true)
     Bid findBylotIdFirstBid(Long lotId);
 
-    @Query(value = "SELECT bidder_name, max(bid_date) FROM bid " +
+    @Query(value = "SELECT bidder_name as bidderName, max(bid_date) as bidDate FROM bid " +
             "WHERE lot_id = ?1 " +
             "GROUP BY bidder_name ORDER BY count(*) DESC LIMIT 1", nativeQuery = true)
-    Bid getMostFrequentBidder(Long lotId);
+    FrequentView getMostFrequentBidder(Long lotId);
 }

@@ -25,4 +25,5 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
             "WHERE lot_id = ?1 " +
             "GROUP BY bidder_name ORDER BY count(*) DESC LIMIT 1", nativeQuery = true)
     FrequentView getMostFrequentBidder(Long lotId);
+
 }

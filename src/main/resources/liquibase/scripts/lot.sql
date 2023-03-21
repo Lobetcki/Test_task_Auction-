@@ -12,3 +12,5 @@ CREATE TABLE lot
     bid_price INTEGER CHECK( start_price > 0 )
 )
 
+
+

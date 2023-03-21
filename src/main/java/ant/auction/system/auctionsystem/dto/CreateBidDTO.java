@@ -32,5 +32,4 @@ public class CreateBidDTO {
         return bid;
     }
 
-
 }

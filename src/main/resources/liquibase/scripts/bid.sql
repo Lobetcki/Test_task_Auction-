@@ -10,3 +10,4 @@ CREATE TABLE bid
     lot_id bigint,
     foreign key (lot_id) references lot (id)
 )
+

@@ -71,7 +71,6 @@ public class LotController {
         return  ResponseEntity.ok("Лот переведен в статус начато");
     }
 
-
                                                         //5 bid Сделать ставку по лоту
     @PostMapping ("/lot/{id}/bid")
     public ResponseEntity<String> createdBid(@PathVariable Long id, @RequestBody CreateBidDTO createBidDTO){

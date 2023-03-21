@@ -3,3 +3,4 @@
        file: liquibase/scripts/lot.sql
    - include:
        file: liquibase/scripts/bid.sql
+

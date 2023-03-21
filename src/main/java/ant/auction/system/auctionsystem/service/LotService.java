@@ -21,6 +21,7 @@ public class LotService  {
     private final BidRepository bidRepository;
     private final LotRepository lotRepository;
 
+
     public LotService(BidRepository bidRepository, LotRepository lotRepository) {
         this.bidRepository = bidRepository;
         this.lotRepository = lotRepository;

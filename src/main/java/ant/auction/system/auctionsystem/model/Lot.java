@@ -10,7 +10,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 public class Lot {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

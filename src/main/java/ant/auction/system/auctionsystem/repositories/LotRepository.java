@@ -12,7 +12,4 @@ import java.util.List;
 public interface LotRepository extends JpaRepository<Lot, Long> {
 
     List<Lot> findLotByStatus(Pageable pageable, Status status);
-
-
-
 }

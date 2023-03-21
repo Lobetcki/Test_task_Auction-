@@ -40,5 +40,4 @@ public class LotDTO {
         return lot;
     }
 
-
 }

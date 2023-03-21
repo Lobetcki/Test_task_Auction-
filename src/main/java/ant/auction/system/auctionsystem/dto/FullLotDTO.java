@@ -45,5 +45,4 @@ public class FullLotDTO {
         return lot;
     }
 
-
 }

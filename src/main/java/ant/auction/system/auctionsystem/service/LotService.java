@@ -31,7 +31,6 @@ public class LotService  {
         this.lotRepository = lotRepository;
     }
 
-
                                                 //1 Get Получить информацию о первом ставившем на лот
     public BidDTO getFirstBid(Long lotId) {
         BidDTO bidDTO = BidDTO.fromBid(bidRepository.findBylotIdFirstBid(lotId));

@@ -64,8 +64,8 @@ public class LotController {
 //// -------------------------------------------------------------------------------------------------------------------
                                                             //4 start Начать торги по лоту
     @PostMapping("/lot/{id}/start")
-    public ResponseEntity<String> startLot(@PathVariable Long id) { //throws NullPointerException {
-        Boolean lotBoolean = lotService.startLot(id);
+    public ResponseEntity<String> startLot(@PathVariable Long id) {
+        Boolean lotBoolean = lotService.startStopLot(id, "start");
         if (!lotBoolean) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
         }
@@ -89,8 +89,8 @@ public class LotController {
                                                            //6 stop Остановить торги по лот
     @PostMapping("/lot/{id}/stop")
     public ResponseEntity<String> stopLot(Long id) {
-        LotDTO lotDTO = lotService.stopLot(id);
-        if (lotDTO == null) {
+        Boolean lotBoolean = lotService.startStopLot(id, "stop");
+        if (!lotBoolean) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
         }
         return  ResponseEntity.ok("Лот перемещен в статус остановлен");

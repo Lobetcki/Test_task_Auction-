@@ -1,6 +1,7 @@
 package ant.auction.system.auctionsystem.service;
 
 import ant.auction.system.auctionsystem.dto.*;
+import ant.auction.system.auctionsystem.model.Bid;
 import ant.auction.system.auctionsystem.model.Lot;
 import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.projections.FrequentView;
@@ -41,43 +42,44 @@ public class LotService  {
                 //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
     public FrequentView getMostFrequentBidder(Long lotId) {
         logger.info("Возвращает имя ставившего на данный лот наибольшее количество раз");
+        try {
         return bidRepository.getMostFrequentBidder(lotId);
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
                                                 //3 lot/{id} Получить полную информацию о лоте
-    public Integer getCurrentPrice(Long lotId) {
-        FullLotDTO fullLotDTO = FullLotDTO.fromLot(lotRepository.findById(lotId).get());
-        return fullLotDTO.getStartPrice() + (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId));
-    }
-
     public FullLotDTO getFullLot(Long lotId) {
-        logger.info("Возвращает полную информацию о лоте с последним ставившим и текущей ценой");
-        FullLotDTO fullLotDTO = FullLotDTO.fromLot(lotRepository.findById(lotId).get());
-        fullLotDTO.setLastBid(BidDTO.fromBid(bidRepository.findBylotIdFinalBid(lotId)));
-        fullLotDTO.setCurrentPrice(getCurrentPrice(lotId));
-        return fullLotDTO;
+        try {
+            Lot lot = lotRepository.findById(lotId).orElse(null);
+            FullLotDTO fullLotDTO = FullLotDTO.fromLot(lot);
+            fullLotDTO.setCurrentPrice(fullLotDTO.getStartPrice() + (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId)));
+            Bid bid = bidRepository.findBylotIdFinalBid(lotId);
+            if (bid == null) {
+                fullLotDTO.setLastBid(null);
+            } else {
+                fullLotDTO.setLastBid(BidDTO.fromBid(bidRepository.findBylotIdFinalBid(lotId)));
+            }
+            logger.info("Возвращает полную информацию о лоте с последним ставившим и текущей ценой " + fullLotDTO);
+            return fullLotDTO;
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
-//    public Map<Lot, Boolean> findIdLot(Long lotId) {
-//        try {
-//            Map<Lot, Boolean> lot = new HashMap<>();
-//            lot.put(lotRepository.findById(lotId).orElse(null), true);
-//            return lot;
-//        } catch (NullPointerException e) {
-//            Map<Lot, Boolean> lot = new HashMap<>();
-//            lot.put(lotRepository.findById(lotId).orElse(null), false);
-//            return lot;
-//        }
-//    }
-
-
-                                                              //4 start Начать торги по лоту
-    public Boolean startLot(Long lotId) {
+                                                              //4 start Начать или закончить торги по лоту
+    public Boolean startStopLot(Long lotId, String start) {
         logger.info("Лот переведен в статус начато");
         try {
             Lot lot = lotRepository.findById(lotId).orElse(null);
             LotDTO lotDTO = LotDTO.fromLot(lot);
-            lotDTO.setStatus(Status.STARTED);
+            if (start.equals("start")) {
+                lotDTO.setStatus(Status.STARTED);
+            }
+            if (start.equals("stop")) {
+                lotDTO.setStatus(Status.STOPPED);
+            }
             LotDTO.fromLot(lotRepository.save(lotDTO.toLot()));
             return true;
         } catch (NullPointerException e) {
@@ -100,13 +102,18 @@ public class LotService  {
     }
 
                                                         //6 lot/{id}/stop Остановить торги по лот
-    public LotDTO stopLot(Long lotId) {
-        logger.info("Останавливает торги по лоту");
-        LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
-        lotDTO.setStatus(Status.STOPPED);
-        LotDTO.fromLot(lotRepository.save(lotDTO.toLot()));
-        return lotDTO;
-    }
+//    public LotDTO stopLot(Long lotId) {
+//        logger.info("Останавливает торги по лоту");
+//        try {
+//        LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
+//        lotDTO.setStatus(Status.STOPPED);
+//        LotDTO.fromLot(lotRepository.save(lotDTO.toLot()));
+//        return lotDTO;
+//            return true;
+//        } catch (NullPointerException e) {
+//            return false;
+//        }
+//    }
 
                                                              //7 lot Создает новый лот
     public String createdLot(CreateLotDTO createLotDTO) {
@@ -128,7 +135,7 @@ public class LotService  {
         logger.info("Экспортирует все лоты в файл CSV");
             return  lotRepository.findAll()
                     .stream().map(FullLotDTO::fromLot)
-                    .peek(fullLotDTO -> fullLotDTO.setCurrentPrice(getCurrentPrice(fullLotDTO.getId())))
+                    .peek(fullLotDTO -> fullLotDTO.setCurrentPrice(fullLotDTO.getStartPrice() + (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(fullLotDTO.getId()))))
                     .peek(fullLotDTO -> fullLotDTO.setLastBid(BidDTO.fromBid(bidRepository.findBylotIdFinalBid(fullLotDTO.getId()))))
                     .collect(Collectors.toList());
     }

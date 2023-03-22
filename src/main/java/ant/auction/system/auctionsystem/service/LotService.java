@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,12 +60,17 @@ public class LotService  {
     }
 
                                                               //4 start Начать торги по лоту
-    public LotDTO startLot(Long lotId) {
-        logger.info("Лот переведен в статус начато"); //if null
-        LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
-        lotDTO.setStatus(Status.STARTED);
-        LotDTO.fromLot(lotRepository.save(lotDTO.toLot()));
-        return lotDTO;
+    public Boolean startLot(Long lotId) {
+        logger.info("Лот переведен в статус начато");
+        try {
+            Lot lot = lotRepository.findById(lotId).orElse(null);
+            LotDTO lotDTO = LotDTO.fromLot(lot);
+            lotDTO.setStatus(Status.STARTED);
+            LotDTO.fromLot(lotRepository.save(lotDTO.toLot()));
+            return true;
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
                                                             //5 lot/{id}/bid Сделать ставку по лоту

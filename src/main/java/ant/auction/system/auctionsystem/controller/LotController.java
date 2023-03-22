@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @RequestMapping()
@@ -63,9 +64,9 @@ public class LotController {
 //// -------------------------------------------------------------------------------------------------------------------
                                                             //4 start Начать торги по лоту
     @PostMapping("/lot/{id}/start")
-    public ResponseEntity<String> startLot(@PathVariable Long id) {
-        LotDTO lotDTO = lotService.startLot(id);
-        if (lotDTO == null) {
+    public ResponseEntity<String> startLot(@PathVariable Long id) { //throws NullPointerException {
+        Boolean lotBoolean = lotService.startLot(id);
+        if (!lotBoolean) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
         }
         return  ResponseEntity.ok("Лот переведен в статус начато");
@@ -124,7 +125,7 @@ public class LotController {
 
         listLot.stream().forEach(fullLotDTO -> {
 
-            try {
+        try {
                 printer.printRecord(
                         fullLotDTO.getId(),
                         fullLotDTO.getTitle(),

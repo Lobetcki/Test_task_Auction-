@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +58,19 @@ public class LotService  {
         return fullLotDTO;
     }
 
+//    public Map<Lot, Boolean> findIdLot(Long lotId) {
+//        try {
+//            Map<Lot, Boolean> lot = new HashMap<>();
+//            lot.put(lotRepository.findById(lotId).orElse(null), true);
+//            return lot;
+//        } catch (NullPointerException e) {
+//            Map<Lot, Boolean> lot = new HashMap<>();
+//            lot.put(lotRepository.findById(lotId).orElse(null), false);
+//            return lot;
+//        }
+//    }
+
+
                                                               //4 start Начать торги по лоту
     public Boolean startLot(Long lotId) {
         logger.info("Лот переведен в статус начато");
@@ -77,10 +89,14 @@ public class LotService  {
     @Transactional
     public LotDTO createdBid(Long lotId, CreateBidDTO createBidDTO) {
         logger.info("Делает заявку по лоту");
-        LotDTO lotDTO = LotDTO.fromLot(lotRepository.findById(lotId).get());
+        try {
+        LotDTO lotDTO = LotDTO.fromLot(Objects.requireNonNull(lotRepository.findById(lotId).orElse(null)));
         createBidDTO.setLot(lotDTO.toLot());
         CreateBidDTO.fromBid(bidRepository.save(createBidDTO.toBid()));
         return lotDTO;
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
                                                         //6 lot/{id}/stop Остановить торги по лот

@@ -27,7 +27,7 @@ public class LotController {
         this.lotService = lotService;
     }
 
-                                                             //1 Get Получить информацию о первом ставившем на лот
+    //1 Get Получить информацию о первом ставившем на лот
     @GetMapping ("/lot/{id}/first")
     public ResponseEntity<BidDTO> getFirstBetOnTheLot (@PathVariable Long id) {
         BidDTO bidDTO = lotService.getFirstBid(id);
@@ -37,7 +37,7 @@ public class LotController {
         return ResponseEntity.ok(bidDTO);
     }
 
-                                                            //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
+    //2 Get Возвращает имя ставившего на данный лот наибольшее количество раз
     @GetMapping("/lot/{id}/frequent")
     public ResponseEntity<FrequentView> getMostFrequentBidder(@PathVariable Long id) {
         FrequentView frequentView = lotService.getMostFrequentBidder(id);
@@ -47,8 +47,7 @@ public class LotController {
         return ResponseEntity.ok(frequentView);
     }
 
-                                                            //3 lot/{id} Получить полную информацию о лоте
-
+    //3 lot/{id} Получить полную информацию о лоте
     @GetMapping("/lot/{id}/full")
     public ResponseEntity<FullLotDTO> getFullLot(@PathVariable Long id) {
         FullLotDTO fullLotDTO = lotService.getFullLot(id);
@@ -57,8 +56,8 @@ public class LotController {
         }
     return ResponseEntity.ok(fullLotDTO);
     }
-//// -------------------------------------------------------------------------------------------------------------------
-                                                            //4 start Начать торги по лоту
+
+    //4 start Начать торги по лоту
     @PostMapping("/lot/{id}/start")
     public ResponseEntity<String> startLot(@PathVariable Long id) {
         Boolean lotBoolean = lotService.startStopLot(id, "start");
@@ -68,7 +67,7 @@ public class LotController {
         return  ResponseEntity.ok("Лот переведен в статус начато");
     }
 
-                                                        //5 bid Сделать ставку по лоту
+    //5 bid Сделать ставку по лоту
     @PostMapping ("/lot/{id}/bid")
     public ResponseEntity<String> createdBid(@PathVariable Long id, @RequestBody CreateBidDTO createBidDTO){
         LotDTO lotDTO = lotService.createdBid(id, createBidDTO);
@@ -82,7 +81,7 @@ public class LotController {
 
     }
 
-                                                           //6 stop Остановить торги по лот
+    //6 stop Остановить торги по лот
     @PostMapping("/lot/{id}/stop")
     public ResponseEntity<String> stopLot(Long id) {
         Boolean lotBoolean = lotService.startStopLot(id, "stop");
@@ -92,25 +91,20 @@ public class LotController {
         return  ResponseEntity.ok("Лот перемещен в статус остановлен");
     }
 
-                                                               //7 lot Создает новый лот
+    //7 lot Создает новый лот
     @PostMapping("/lot")
     public ResponseEntity<String> createdLot(@RequestBody CreateLotDTO createLotDTO) {
 
         return  ResponseEntity.ok("Лот: " + lotService.createdLot(createLotDTO) + " успешно создан");
     }
 
-// -------------------------------------------------------------------------------------------------------------------
-
-
-                            //8 get lot Получить все лоты, основываясь на фильтре статуса и номере страницы
+    //8 get lot Получить все лоты, основываясь на фильтре статуса и номере страницы
     @GetMapping("/lots")
     public ResponseEntity<List<LotDTO>> findLots(Pageable pageable, @RequestParam("status") Status status) {
         return ResponseEntity.ok(lotService.findLots(pageable, status));
     }
 
-
-
-                                                     //9 Экспортировать все лоты в файл CSV
+    //9 Экспортировать все лоты в файл CSV
     @GetMapping("lot/export")
     public ResponseEntity<String> getCSVFile(HttpServletResponse response) throws IOException {
         List<FullLotDTO> listLot = lotService.getCSVFile();

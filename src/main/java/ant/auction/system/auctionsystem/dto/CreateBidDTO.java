@@ -18,9 +18,7 @@ public class CreateBidDTO {
 
     public static CreateBidDTO fromBid(Bid bid) {
         CreateBidDTO dto = new CreateBidDTO();
-
         dto.setBidderName(bid.getBidderName());
-
         return dto;
     }
 

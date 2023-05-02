@@ -53,8 +53,8 @@ public class LotService  {
         try {
             Lot lot = lotRepository.findById(lotId).orElse(null);
             FullLotDTO fullLotDTO = FullLotDTO.fromLot(lot);
-            fullLotDTO.setCurrentPrice(fullLotDTO.getStartPrice() + (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId)));
             Bid bid = bidRepository.findBylotIdFinalBid(lotId);
+            fullLotDTO.setCurrentPrice(fullLotDTO.getStartPrice() + (fullLotDTO.getBidPrice() * bidRepository.getBidCountByLotId(lotId)));
             if (bid == null) {
                 fullLotDTO.setLastBid(null);
             } else {
@@ -99,6 +99,7 @@ public class LotService  {
             return null;
         }
     }
+
 
                                                         //6 lot/{id}/stop Остановить торги по лот
 //    public LotDTO stopLot(Long lotId) {

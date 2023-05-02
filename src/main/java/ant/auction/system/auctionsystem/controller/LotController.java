@@ -7,7 +7,6 @@ import ant.auction.system.auctionsystem.service.LotService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +16,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.NoSuchElementException;
-
 
 @RequestMapping()
 @RestController
 public class LotController {
 
-    private LotService lotService;
+    private final LotService lotService;
 
     public LotController(LotService lotService) {
         this.lotService = lotService;
@@ -149,6 +146,8 @@ public class LotController {
         writer.close();
         return ResponseEntity.ok().build();
     }
+
+
 
 
 

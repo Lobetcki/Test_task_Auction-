@@ -27,7 +27,6 @@ public class LotController {
         this.lotService = lotService;
     }
 
-
                                                              //1 Get Получить информацию о первом ставившем на лот
     @GetMapping ("/lot/{id}/first")
     public ResponseEntity<BidDTO> getFirstBetOnTheLot (@PathVariable Long id) {

@@ -13,23 +13,10 @@ public class BidDTO {
     public String bidderName;
     public LocalDateTime bidDate;
 
-
     public static BidDTO fromBid(Bid bid) {
         BidDTO dto = new BidDTO();
-
         dto.setBidDate(bid.getBidDate());
         dto.setBidderName(bid.getBidderName());
-
         return dto;
     }
-
-    public Bid toBid() {
-        Bid bid = new Bid();
-
-        bid.setBidDate(LocalDateTime.now());
-        bid.setBidderName(this.getBidderName());
-
-        return bid;
-    }
-
 }

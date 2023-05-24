@@ -12,14 +12,6 @@ public class CreateLotDTO {
     private Integer startPrice;
     private Integer bidPrice;
 
-    public static CreateLotDTO fromLot(Lot lot) {
-        CreateLotDTO dto = new CreateLotDTO();
-
-        dto.setTitle(lot.getTitle());
-
-        return dto;
-    }
-
     public Lot toLot() {
         Lot lot = new Lot();
 

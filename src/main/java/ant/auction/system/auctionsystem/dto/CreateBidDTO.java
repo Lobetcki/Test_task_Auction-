@@ -23,5 +23,4 @@ public class CreateBidDTO {
         bid.setLot(this.getLot());
         return bid;
     }
-
 }

@@ -3,7 +3,6 @@ package ant.auction.system.auctionsystem.controller;
 import ant.auction.system.auctionsystem.dto.*;
 import ant.auction.system.auctionsystem.front.LotFront;
 import ant.auction.system.auctionsystem.model.Status;
-import ant.auction.system.auctionsystem.service.LotService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,11 +16,9 @@ import java.util.List;
 @RestController
 public class LotController {
 
-    private final LotService lotService;
     private final LotFront lotFront;
 
-    public LotController(LotService lotService, LotFront lotFront) {
-        this.lotService = lotService;
+    public LotController(LotFront lotFront) {
         this.lotFront = lotFront;
     }
 

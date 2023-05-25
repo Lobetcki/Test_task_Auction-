@@ -16,12 +16,6 @@ public class CreateBidDTO {
     @JsonIgnore
     public Lot lot;
 
-    public static CreateBidDTO fromBid(Bid bid) {
-        CreateBidDTO dto = new CreateBidDTO();
-        dto.setBidderName(bid.getBidderName());
-        return dto;
-    }
-
     public Bid toBid() {
         Bid bid = new Bid();
         bid.setBidDate(LocalDateTime.now());

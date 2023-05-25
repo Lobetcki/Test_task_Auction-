@@ -23,14 +23,14 @@ public class LotFront {
     public BidDTO getFirstBid(Long lotId) {
         Bid bid = lotService.getFirstBid(lotId);
         if (bid == null) return null;
-        BidDTO bidDTO = BidDTO.fromBid(bid);
-        return bidDTO;
+        return BidDTO.fromBid(bid);
     }
 
     //2 Получить полную информацию о лоте
     public FullLotDTO getFullLot(Long lotId) {
         try {
-            FullLotDTO fullLotDTO = FullLotDTO.fromLot(lotService.getLot(lotId));
+            FullLotDTO fullLotDTO = new FullLotDTO();
+            fullLotDTO.setLotDTO(LotDTO.fromLot(lotService.getLot(lotId)));
             fullLotDTO.setCurrentPrice(lotService.currentPriceLot(lotId));
             Bid bid = lotService.getBid(lotId);
             if (bid == null) {

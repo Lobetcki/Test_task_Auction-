@@ -17,7 +17,7 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
     //- Получить текущую цену лота. Должен вернуть число.
     @Query(value = "SELECT l.bid_price * (SELECT COUNT(b) AS count FROM bid b WHERE lot_id = ?1) " +
             "+ l.start_price AS sum FROM lot AS l  WHERE l.id = ?1", nativeQuery = true)
-    Integer getСurrentPriceLotId(Long lotId);
+    Integer getCurrentPriceLotId(Long lotId);
 
 
 

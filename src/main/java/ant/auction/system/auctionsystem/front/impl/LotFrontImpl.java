@@ -21,6 +21,7 @@ public class LotFrontImpl implements LotFront {
     }
 
     //1 Получить информацию о первом ставившем на лот
+    @Override
     public BidDTO getFirstBid(Long lotId) {
         Bid bid = lotService.getFirstBid(lotId);
         if (bid == null) return null;
@@ -28,6 +29,7 @@ public class LotFrontImpl implements LotFront {
     }
 
     //2 Получить полную информацию о лоте
+    @Override
     public FullLotDTO getFullLot(Long lotId) {
         try {
             FullLotDTO fullLotDTO = new FullLotDTO();
@@ -46,6 +48,7 @@ public class LotFrontImpl implements LotFront {
     }
 
     //3 Начать или закончить торги по лоту
+    @Override
     public Boolean startStopLot(Long lotId, String status) {
         return lotService.startStopLot(lotId, status);
     }
@@ -62,11 +65,13 @@ public class LotFrontImpl implements LotFront {
     }
 
     //5 Создает новый лот
+    @Override
     public String createdLot(CreateLotDTO createLotDTO) {
         return lotService.createdLot(createLotDTO.toLot());
     }
 
     //6 Получить все лоты, основываясь на фильтре статуса и номере страницы
+    @Override
     public List<LotDTO> findLots(Pageable pageable, Status status) {
         List<Lot> lots = lotService.findLots1(pageable, status);
         return lots

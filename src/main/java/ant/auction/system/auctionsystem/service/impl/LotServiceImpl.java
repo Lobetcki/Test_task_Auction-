@@ -26,24 +26,29 @@ public class LotServiceImpl implements LotService {
     }
 
     //1 Получить информацию о первом ставившем на лот
+    @Override
     public Bid getFirstBid(Long lotId) {
         return bidRepository.findBylotIdFirstBid(lotId);
     }
 
     //2 Получить полную информацию о лоте
+    @Override
     public Lot getLot(Long lotId) {
         return lotRepository.findById(lotId).orElse(null);
     }
 
+    @Override
     public Bid getBid(Long lotId) {
         return bidRepository.findBylotIdFinalBid(lotId);
     }
 
+    @Override
     public Integer currentPriceLot(Long lotId) {
         return lotRepository.getCurrentPriceLotId(lotId);
     }
 
     //3 Начать или закончить торги по лоту
+    @Override
     public Boolean startStopLot(Long lotId, String status) {
         try {
             Lot lot = lotRepository.findById(lotId).orElse(null);
@@ -62,6 +67,7 @@ public class LotServiceImpl implements LotService {
     }
 
     //4 Сделать ставку по лоту
+    @Override
     @Transactional
     public Lot createdBid(Long lotId, Bid bid) {
 
@@ -75,12 +81,14 @@ public class LotServiceImpl implements LotService {
     }
 
     //5 Создает новый лот
+    @Override
     public String createdLot(Lot lot) {
         lotRepository.save(lot);
         return lot.getTitle();
     }
 
     //6 Получить все лоты, основываясь на фильтре статуса и номере страницы
+    @Override
     public List<Lot> findLots1(Pageable pageable, Status status) {
         return lotRepository.findLotByStatus(pageable, status);
     }

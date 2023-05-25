@@ -4,7 +4,9 @@ import ant.auction.system.auctionsystem.dto.*;
 import ant.auction.system.auctionsystem.front.LotFront;
 import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.service.LotService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,8 @@ public class LotController {
     }
 
     //1 Получить информацию о первом ставившем на лот
-    @GetMapping ("/{id}/firstBid")
-    public ResponseEntity<BidDTO> getFirstBetOnTheLot (@PathVariable Long id) {
+    @GetMapping("/{id}/firstBid")
+    public ResponseEntity<BidDTO> getFirstBetOnTheLot(@PathVariable Long id) {
         BidDTO bidDTO = lotFront.getFirstBid(id);
         if (bidDTO == null) {
             return ResponseEntity.notFound().build();
@@ -40,7 +42,7 @@ public class LotController {
         if (fullLotDTO == null) {
             return ResponseEntity.notFound().build();
         }
-    return ResponseEntity.ok(fullLotDTO);
+        return ResponseEntity.ok(fullLotDTO);
     }
 
     //3 Начать торги по лоту
@@ -50,7 +52,7 @@ public class LotController {
         if (!lotBoolean) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
         }
-        return  ResponseEntity.ok("Лот переведен в статус START");
+        return ResponseEntity.ok("Лот переведен в статус START");
     }
 
     //3 Остановить торги по лоту
@@ -60,11 +62,11 @@ public class LotController {
         if (!lotBoolean) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
         }
-        return  ResponseEntity.ok("Лот перемещен в статус STOP");
+        return ResponseEntity.ok("Лот перемещен в статус STOP");
     }
 
     //4 Сделать ставку по лоту
-    @PostMapping ("/{id}/createdBid")
+    @PostMapping("/{id}/createdBid")
     public ResponseEntity<String> createdBid(@PathVariable Long id,
                                              @RequestBody CreateBidDTO createBidDTO) {
         LotDTO lotDTO = lotFront.createdBid(id, createBidDTO);
@@ -84,14 +86,16 @@ public class LotController {
         if (createLotDTO == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return  ResponseEntity.ok(
+        return ResponseEntity.ok(
                 "Лот: " + lotFront.createdLot(createLotDTO) + " успешно создан");
     }
 
     //6 Получить все лоты, основываясь на фильтре статуса и номере страницы
     @GetMapping("/all")
-    public ResponseEntity<List<LotDTO>> findLots(Pageable pageable,
+    public ResponseEntity<List<LotDTO>> findLots(@RequestParam("pageNumber") int pageNumber,
+                                                 @RequestParam("pageSize") int pageSize,
                                                  @RequestParam("status") Status status) {
-        return ResponseEntity.ok(lotService.findLots(pageable, status));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("status"));
+        return ResponseEntity.ok(lotFront.findLots(pageable, status));
     }
 }

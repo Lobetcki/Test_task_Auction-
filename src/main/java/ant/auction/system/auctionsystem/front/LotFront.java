@@ -7,10 +7,8 @@ import ant.auction.system.auctionsystem.model.Status;
 import ant.auction.system.auctionsystem.service.LotService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -21,28 +19,25 @@ public class LotFront {
         this.lotService = lotService;
     }
 
-    //1 Get Получить информацию о первом ставившем на лот
-    public BidDTO getFirstBid(Long lotId) { // неработает
+    //1 Получить информацию о первом ставившем на лот
+    public BidDTO getFirstBid(Long lotId) {
         Bid bid = lotService.getFirstBid(lotId);
         if (bid == null) return null;
         BidDTO bidDTO = BidDTO.fromBid(bid);
         return bidDTO;
     }
 
-    //2 lot/{id} Получить полную информацию о лоте
+    //2 Получить полную информацию о лоте
     public FullLotDTO getFullLot(Long lotId) {
         try {
             FullLotDTO fullLotDTO = FullLotDTO.fromLot(lotService.getLot(lotId));
-
+            fullLotDTO.setCurrentPrice(lotService.currentPriceLot(lotId));
             Bid bid = lotService.getBid(lotId);
             if (bid == null) {
                 fullLotDTO.setLastBid(null);
             } else {
                 fullLotDTO.setLastBid(BidDTO.fromBid(bid));
             }
-
-            fullLotDTO.setCurrentPrice(lotService.currentPriceLot(lotId));
-
             return fullLotDTO;
         } catch (NullPointerException e) {
             return null;
@@ -65,7 +60,7 @@ public class LotFront {
         }
     }
 
-    //5 lot Создает новый лот
+    //5 Создает новый лот
     public String createdLot(CreateLotDTO createLotDTO) {
         return lotService.createdLot(createLotDTO.toLot());
     }

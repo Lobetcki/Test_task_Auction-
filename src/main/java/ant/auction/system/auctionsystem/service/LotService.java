@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class LotService {
@@ -27,15 +26,6 @@ public class LotService {
     }
 
     //1 Получить информацию о первом ставившем на лот
-    public BidDTO getFirstBid1(Long lotId) {
-        Bid bid = bidRepository.findBylotIdFirstBid(lotId);
-        if (bid == null) {
-            return null;
-        }
-        BidDTO bidDTO = BidDTO.fromBid(bid);
-        return bidDTO;
-    }
-
     public Bid getFirstBid(Long lotId) {
         Bid bid = bidRepository.findBylotIdFirstBid(lotId);
         return bid;
@@ -94,11 +84,5 @@ public class LotService {
     //6 Получить все лоты, основываясь на фильтре статуса и номере страницы
     public List<Lot> findLots1(Pageable pageable, Status status) {
         return lotRepository.findLotByStatus(pageable, status);
-    }
-
-    public List<LotDTO> findLots(Pageable pageable, Status status) {
-        return lotRepository.findLotByStatus(pageable, status)
-                .stream().map(LotDTO::fromLot)
-                .collect(Collectors.toList());
     }
 }

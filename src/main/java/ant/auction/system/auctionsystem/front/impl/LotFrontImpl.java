@@ -54,6 +54,7 @@ public class LotFrontImpl implements LotFront {
     }
 
     //4 Сделать ставку по лоту
+    @Override
     public LotDTO createdBid(Long lotId, CreateBidDTO createBidDTO) {
         try {
             Bid bid = createBidDTO.toBid();

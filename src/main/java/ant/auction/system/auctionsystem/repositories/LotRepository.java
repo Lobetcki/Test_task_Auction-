@@ -18,8 +18,4 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
     @Query(value = "SELECT l.bid_price * (SELECT COUNT(b) AS count FROM bid b WHERE lot_id = ?1) " +
             "+ l.start_price AS sum FROM lot AS l  WHERE l.id = ?1", nativeQuery = true)
     Integer getCurrentPriceLotId(Long lotId);
-
-
-
-
 }
